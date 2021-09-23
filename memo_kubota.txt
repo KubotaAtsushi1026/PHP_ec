@@ -1,0 +1,123 @@
+# ---- 環境設定 ---- #
+# AWS Cloud9 Amazon Linux
+
+# PHP 設定
+php --version
+# PHP 5.6.40 (cli) (built: Oct 31 2019 20:35:16) 
+
+# PDO 設定
+mysql --version
+#mysql  Ver 14.14 Distrib 5.5.62, for Linux (x86_64) using readline 5.1
+
+# 日本語設定
+sed -e "/utf8/d" -e "/client/d" -e "/^\[mysqld_safe\]$/i character-set-server=utf8\n\n[client]\ndefault-character-set=utf8" /etc/my.cnf |sudo tee /etc/my.cnf
+
+$ 日本時間設定
+date
+echo "Asia/Tokyo" | sudo tee /etc/timezone
+sudo mysql_tzinfo_to_sql /usr/share/zoneinfo
+sudo cp /etc/sysconfig/clock /etc/sysconfig/clock.org
+sudo vi /etc/sysconfig/clock
+## 書き換え
+ZONE="Asia/Tokyo"
+UTC=true
+
+sudo ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+sudo reboot
+
+sudo service mysqld restart
+
+# PDO 設定
+php -m | grep pdo
+# pdo_mysql
+# pdo_sqlite
+
+# pdo_mysql がない場合
+sudo yum -y install php71 php71-mbstring php71-pdo
+
+## ---- データベース構築 ---- # 
+
+# MySQL
+
+sudo service mysqld start
+mysql -u root
+
+show databases;
+create database kubota character set utf8;
+show databases;
+
+use kubota;
+
+show tables;
+
+create table users(
+    id int primary key auto_increment, 
+    name varchar(50) not null,
+    age int not null,
+    created_at timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+insert into users(name, age) values('kubota', 23);
+insert into users(name, age) values('shima', 48);
+
+// データベースと接続を行うメソッド
+private static function get_connection(){
+    try {
+        // オプション設定
+        $options = array(
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,        // 失敗したら例外を投げる
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_CLASS,   //デフォルトのフェッチモードはクラス
+            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',   //MySQL サーバーへの接続時に実行するコマンド
+          );
+        $pdo = new PDO('mysql:host=localhost;dbname=kubota', 'root', '', $options);
+        return $pdo;
+        
+    } catch (PDOException $e) {
+        return 'PDO exception: ' . $e->getMessage();
+    }
+}
+
+// データベースとの切断を行うメソッド
+private static function close_connection($pdo, $stmp){
+    try {
+        $pdo = null;
+        $stmp = null;
+    } catch (PDOException $e) {
+        return 'PDO exception: ' . $e->getMessage();
+    }
+}
+
+// 全テーブル情報を取得するメソッド
+public static function all(){
+    try {
+        $pdo = self::get_connection();
+        $stmt = $pdo->query('SELECT * FROM users ORDER BY id DESC');
+        // フェッチの結果を、Userクラスのインスタンスにマッピングする
+        $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'User');
+        $users = $stmt->fetchAll();
+        self::close_connection($pdo, $stmp);
+        // Userクラスのインスタンスの配列を返す
+        return $users;
+    } catch (PDOException $e) {
+        return 'PDO exception: ' . $e->getMessage();
+    }
+}
+
+// データを1件登録するメソッド
+public function save(){
+    try {
+        $pdo = self::get_connection();
+        $stmt = $pdo -> prepare("INSERT INTO users (name, age) VALUES (:name, :age)");
+        // バインド処理
+        $stmt->bindParam(':name', $this->name, PDO::PARAM_STR);
+        $stmt->bindParam(':age', $this->age, PDO::PARAM_INT);
+        // 実行
+        $stmt->execute();
+        self::close_connection($pdo, $stmp);
+        return "新規ユーザー登録が成功しました。";
+        
+    } catch (PDOException $e) {
+        return 'PDO exception: ' . $e->getMessage();
+    }
+}
+    

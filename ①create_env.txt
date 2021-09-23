@@ -1,0 +1,81 @@
+### ①Initial Settings (Amazon Linux) =====================================
+
+## PHP version ------------------------
+php --version
+# PHP 5.6.40
+
+sudo yum update -y
+# sudo yum -y install php72 php72-mbstring php72-pdo
+sudo yum -y install php72 php72-mbstring php72-pdo php72-intl php72-pdo_mysql php72-pdo_pgsql php72-xdebug php72-opcache php72-apcu
+sudo unlink /usr/bin/php
+sudo ln -s /etc/alternatives/php7 /usr/bin/php
+php --version
+# PHP 7.2.34 (cli) (built: Oct 21 2020 19:52:01) ( NTS )
+php -m | grep pdo
+
+## MySQL version ------------------------
+mysql --version
+# mysql  Ver 14.14 Distrib 5.5.62, for Linux (x86_64) using readline 5.1
+
+## MySQL encoding ----------------------
+sudo service mysqld start
+mysql -u root
+show variables like '%char%';
+exit;
+
+sed -e "/utf8/d" -e "/client/d" -e "/^\[mysqld_safe\]$/i character-set-server=utf8\n\n[client]\ndefault-character-set=utf8" /etc/my.cnf |sudo tee /etc/my.cnf
+sudo service mysqld restart
+mysql -u root
+show variables like '%char%';
+exit;
+
+## System date -------------------------
+date
+echo "Asia/Tokyo" | sudo tee /etc/timezone
+sudo mysql_tzinfo_to_sql /usr/share/zoneinfo
+sudo cp /etc/sysconfig/clock /etc/sysconfig/clock.org
+sudo vi /etc/sysconfig/clock
+## 書き換え
+ZONE="Asia/Tokyo"
+UTC=true
+
+sudo ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+sudo reboot
+date
+
+## For memory ------------------------- 
+free -m
+sudo chmod 0600 /var/swap.1
+sudo -s /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024
+sudo -s /sbin/mkswap /var/swap.1
+sudo -s /sbin/swapon /var/swap.1
+
+sudo sh -c "echo 3 > /proc/sys/vm/drop_caches"
+
+php artisan cache:clear
+
+##  Install Composer -----------------
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+composer -V
+# Composer version 2.0.9 2021-01-27 16:09:27
+
+## clone app from remote repository and run ------
+# ref)  https://qiita.com/chimayu/items/321245f51d785811dbc7
+
+git clone https://github.com/TakanoriShima/bbs_laravel.git
+
+cd bbs_laravel
+composer install
+cp .env.example .env
+# .env 一部書き換え
+# DB_DATABASE=bbs_laravel
+
+php artisan key:generate
+
+sudo service mysqld start
+mysql -u root
+CREATE DATABASE bbs_laravel DEFAULT CHARACTER SET utf8;
+
+php artisan migrate:fresh --seed
+php artisan serve --host=$IP --port=$PORT

@@ -1,0 +1,89 @@
+create database bbs_app default character set utf8;
+use bbs_app;
+
+
+create table users(
+    id int auto_increment primary key,
+    name varchar(255) not null,
+    email varchar(255) not null unique,
+    password varchar(255) not null,
+    created_at timestamp default CURRENT_TIMESTAMP
+);
+
+
+
+create table posts(
+    id int auto_increment primary key,
+    user_id int not null,
+    title varchar(255) not null,
+    content varchar(255) not null,
+    image varchar(255) not null,
+    created_at timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+insert into posts(user_id, title, content, image) values(1, "こんにちは", "よろしく", "1.jpg");
+insert into posts(user_id, title, content, image) values(10, "こんにちは", "よろしく", "1.jpg");
+
+drop table posts;
+
+# 外部キー
+create table posts(
+    id int auto_increment primary key,
+    user_id int not null,
+    title varchar(255) not null,
+    content varchar(255) not null,
+    image varchar(255) not null,
+    created_at timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    foreign key(user_id) references users(id)
+);
+
+insert into posts(user_id, title, content, image) values(1, "こんにちは", "よろしく", "1.jpg");
+insert into posts(user_id, title, content, image) values(10, "こんにちは", "よろしく", "1.jpg");
+delete from users where id=1;
+
+drop table posts;
+
+create table posts(
+    id int auto_increment primary key,
+    user_id int not null,
+    title varchar(255) not null,
+    content varchar(255) not null,
+    image varchar(255) not null,
+    created_at timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    foreign key(user_id) references users(id)
+    on delete cascade
+    on update cascade
+);
+
+insert into posts(user_id, title, content, image) values(1, "こんにちは", "よろしく", "1.jpg");
+insert into posts(user_id, title, content, image) values(10, "こんにちは", "よろしく", "1.jpg");
+delete from users where id=1;
+select * from users;
+select * from posts;
+
+create table comments(
+    id int auto_increment primary key,
+    user_id int not null,
+    post_id int not null,
+    content varchar(255) not null,
+    created_at timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    foreign key(user_id) references users(id)
+    on delete cascade
+    on update cascade,
+    foreign key(post_id) references posts(id)
+    on delete cascade
+    on update cascade
+);
+
+create table favorites(
+    id int auto_increment primary key,
+    user_id int not null,
+    post_id int not null,
+    created_at timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    foreign key(user_id) references users(id)
+    on delete cascade
+    on update cascade,
+    foreign key(post_id) references posts(id)
+    on delete cascade
+    on update cascade
+);
