@@ -17,9 +17,16 @@
         $_SESSION['login_user'] = $user;
         // flash_messageをセット
         $_SESSION['flash_message'] = 'ログインしました';
-        // リダイレクト
-        header('Location: top.php');
-        exit;
+        // 管理者ならば
+        if($user->admin_flag == 1){
+            // リダイレクト
+            header('Location: admin_top.php');
+            exit;
+            // var_dump('管理者');
+        }else
+            header('Location: user_top.php');
+            exit;
+            // var_dump('一般');
     }else{
         $errors = array();
         $errors[] = 'そのようなユーザーは登録されていません';

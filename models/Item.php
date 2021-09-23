@@ -4,27 +4,28 @@
     require_once 'models/User.php';
     require_once 'models/Model.php';
 
-    // 投稿の設計図を作成
-    class Post extends Item{
+    // 商品の設計図を作成
+    class Item extends Model{
         // プロパティ
-        public $id; // 投稿番号
-        public $user_id; //投稿者のユーザー番号
-        public $name; // タイトル
-        public $content; // 本文
-        public $price;
-        public $stock;
-        public $image;
-        public $status_flag;// 画像ファイル名
-        public $created_at; // 投稿日時
-        public $updated_at;
+        public $id; // 商品番号
+        public $user_id; //登録者のユーザー番号
+        public $name; // 商品名
+        public $content; // 紹介文
+        public $price; // 価格
+        public $stock; // 在庫数
+        public $image; // 商品画像
+        public $status_flag;// 商品画像
+        public $created_at; // 公開日時
+        public $updated_at; // 更新日時
         // コンストラクタ
-        public function __construct($user_id="", $title="", $content="", $price="", $stock="", $image=""){
+        public function __construct($user_id="", $name="", $content="", $price="", $stock="", $image="", $status_flag=""){
             $this->user_id = $user_id;
-            $this->title = $name;
+            $this->name = $name;
             $this->content = $content;
             $this->price = $price;
             $this->stock = $stock;
             $this->image = $image;
+            $this->status_flag = $status_flag;
         }
         
         // 入力チェックをするメソッド
@@ -70,15 +71,17 @@
                 $pdo = self::get_connection();
                 
                 if($this->id === null){
-                $stmt = $pdo -> prepare("INSERT INTO posts (user_id, title, content, image) VALUES (:user_id, :title, :content, :image)");
-                // バインド処理
-                $stmt->bindParam(':user_id', $this->user_id, PDO::PARAM_INT);
-                $stmt->bindParam(':title', $this->title, PDO::PARAM_STR);
-                $stmt->bindParam(':content', $this->content, PDO::PARAM_STR);
-                $stmt->bindParam(':image', $this->image, PDO::PARAM_STR);
-
-                // 実行
-                $stmt->execute();
+                    $stmt = $pdo -> prepare("INSERT INTO items (user_id, name, content, price, stock, image, status_flag) VALUES (:user_id, :name, :content, :price, :stock, :image, :status_flag)");
+                    // バインド処理
+                    $stmt->bindParam(':user_id', $this->user_id, PDO::PARAM_INT);
+                    $stmt->bindParam(':name', $this->name, PDO::PARAM_STR);
+                    $stmt->bindParam(':content', $this->content, PDO::PARAM_STR);
+                    $stmt->bindParam(':price', $this->price, PDO::PARAM_INT);
+                    $stmt->bindParam(':stock', $this->stock, PDO::PARAM_INT);
+                    $stmt->bindParam(':image', $this->image, PDO::PARAM_STR);
+                    $stmt->bindParam(':status_flag', $this->status_flag, PDO::PARAM_INT);
+                    // 実行
+                    $stmt->execute();
                     
                 }else{
                      $stmt = $pdo -> prepare("UPDATE posts SET title=:title, content=:content, image=:image WHERE id=:id");
@@ -93,7 +96,7 @@
                 
                 self::close_connection($pdo, $stmp);
                 if($this->id === null){
-                    return "新規写真投稿が成功しました。";
+                    return "新規商品投稿が成功しました。";
                 }else{
                     return $this->id. 'の投稿情報を更新しました';
                 }

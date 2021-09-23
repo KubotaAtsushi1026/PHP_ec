@@ -8,9 +8,10 @@
     $name = $_POST['name'];
     $email = $_POST['email'];
     $password = $_POST['password'];
+    $admin_flag = $_POST['admin_flag'];
 
     // 入力された値から新しいユーザー作成
-    $new_user = new User($name, $email, $password);
+    $new_user = new User($name, $email, $password, $admin_flag);
     // var_dump($new_user);
     
     // 入力チェック(validation)

@@ -9,4 +9,4 @@
     $_SESSION['errors'] = null;
     
     // HTMLの表示
-    include_once 'views/create_view.php';
+    include_once 'views/signup_view.php';

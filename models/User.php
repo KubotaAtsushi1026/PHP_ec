@@ -8,13 +8,15 @@
         public $name; // 名前
         public $email; // メールアドレス
         public $password; // パスワード
+        public $admin_flag; // 管理者か一般ユーザーか
         public $created_at;
         public $updated_at;
         // コンストラクタ
-        public function __construct($name="", $email="", $password=""){
+        public function __construct($name="", $email="", $password="", $admin_flag=""){
             $this->name = $name;
             $this->email = $email;
             $this->password = $password;
+            $this->admin_flag = $admin_flag;
         }
         
         // 入力チェックをするメソッド
@@ -40,8 +42,7 @@
             // 完成したエラー配列はいあげる
             return $errors;
         }
-                // データベースと接続を行うメソッド
-        
+
         // 全テーブル情報を取得するメソッド
         public static function all(){
             try {
@@ -63,11 +64,13 @@
                 $pdo = self::get_connection();
                 
                 if($this->id === null){
-                $stmt = $pdo -> prepare("INSERT INTO users (name, email, password) VALUES (:name, :email, :password)");
+                $stmt = $pdo -> prepare("INSERT INTO users (name, email, password, admin_flag) VALUES (:name, :email, :password, :admin_flag)");
                 // バインド処理
                 $stmt->bindParam(':name', $this->name, PDO::PARAM_STR);
                 $stmt->bindParam(':email', $this->email, PDO::PARAM_STR);
                 $stmt->bindParam(':password', $this->password, PDO::PARAM_STR);
+                $stmt->bindParam(':admin_flag', $this->admin_flag, PDO::PARAM_INT);
+
 
                 // 実行
                 $stmt->execute();
@@ -126,12 +129,12 @@
         
         // メールアドレスとパスワードを与えられてユーザーを取得
         public static function login($email, $password){
-             try {
+            try {
                 $pdo = self::get_connection();
                 $stmt = $pdo -> prepare("SELECT * FROM users WHERE email=:email AND password=:password");
                 // バインド処理
                 $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-                 $stmt->bindParam(':password', $password, PDO::PARAM_STR);                // 実行
+                $stmt->bindParam(':password', $password, PDO::PARAM_STR);                // 実行
 
                 // 実行
                 $stmt->execute();
@@ -141,8 +144,8 @@
                 self::close_connection($pdo, $stmp);
                 return $user;
                 
-                } catch (PDOException $e) {
-                    return 'PDO exception: ' . $e->getMessage();
-                }
+            } catch (PDOException $e) {
+                return 'PDO exception: ' . $e->getMessage();
+            }
         }
     }
