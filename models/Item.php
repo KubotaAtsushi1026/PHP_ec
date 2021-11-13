@@ -1,6 +1,5 @@
 <?php
     // モデル(M)
-    require_once 'models/Comment.php';
     require_once 'models/User.php';
     require_once 'models/Model.php';
 
@@ -33,14 +32,19 @@
             // 空のエラー配列作成
             $errors = array();
             // タイトルが入力されていなければ
-            if($this->title === ''){
-                $errors[] = 'タイトルが入力されていません';
+            if($this->name === ''){
+                $errors[] = '商品名が入力されていません';
             }
             // 本文が入力されていなければ
             if($this->content === ''){
-                $errors[] = '本文を入力してください';
+                $errors[] = '紹介文を入力してください';
             }
-            
+            if($this->price === ''){
+                $errors[] = '価格を入力してください';
+            }
+            if($this->stock === ''){
+                $errors[] = '在庫数を入力してください';
+            }
             // 画像が選択されていなければ
             if($this->image === ''){
                 $errors[] = '画像を選択してください';

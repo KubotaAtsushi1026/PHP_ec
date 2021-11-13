@@ -22,7 +22,7 @@
             在庫数: <input type="number" name="stock" min="0"><br>
             画像: <input type="file" name="image"><br>
             公開状態: <input type="radio" name="status_flag" value="1" checked> 公開
-            <input type="radio" name="status_flag" value="2"> 非公開<br>
+            <input type="radio" name="status_flag" value="0"> 非公開<br>
             <!--<input type="submit" value="登録">-->
             <button type="submit">登録</button>
         </form>

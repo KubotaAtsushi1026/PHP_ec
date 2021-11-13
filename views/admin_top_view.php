@@ -17,7 +17,17 @@
         
         <p><a href="item_create.php">新規商品登録</a></p>
         
-       
+        <ul>
+            <li><?= $item->id ?></li>
+            <li><?= $item->name ?></li>
+            <li><?= $item->content ?></li>
+            <li><?= $item->price ?></li>
+            <li><?= $item->stock ?></li>
+            <li><?= $item->status_flag ?></li>
+            <li><img src="upload/<?= $item->image ?>"></li>
+            <li><?= $item->created_at ?></li>
+            <li><?= $item->updated_at ?></li>
+        </ul>
         
         <p><a href="logout.php">ログアウト</a></p>
 

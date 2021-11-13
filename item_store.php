@@ -23,11 +23,11 @@
     $item = new Item($login_user->id, $name, $content, $price, $stock, $image, $status_flag);
     // var_dump($item);
     // // 入力チェック
-    // $errors = $post->validate();
+    $errors = $item->validate();
     // // var_dump($errors);
     
     // // 入力エラーが一つもなければ
-    // if(count($errors) === 0){
+    if(count($errors) === 0){
         
         $image = mt_rand(100, 10000) . $image;
         $item->image = $image;
@@ -44,9 +44,9 @@
         // リダイレクト
         header('Location: admin_top.php');
         exit;
-    // }else{ // 入力エラーが一つでもあれば
-    //     $_SESSION['errors'] = $errors;
-    //     // リダイレクト
-    //     header('Location: post_create.php');
-    //     exit;
-    // }
+    }else{ // 入力エラーが一つでもあれば
+        $_SESSION['errors'] = $errors;
+        // リダイレクト
+        header('Location: item_create.php');
+        exit;
+    }

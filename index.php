@@ -1,8 +1,13 @@
 <?php
    require_once 'models/User.php';
+   require_once 'models/Item.php';
+
    session_start();
    // $_SESSION['users'] = null;
    $users = User::all();
+   $items = Item::all();
+   // var_dump($items);
+
    $flash_message = $_SESSION['flash_message'];
    $_SESSION['flash_message'] = null;
    // var_dump($users);
