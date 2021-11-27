@@ -58,13 +58,13 @@
         public static function all(){
             try {
                 $pdo = self::get_connection();
-                $stmt = $pdo->query('SELECT posts.id, users.name, posts.title, posts.content, posts.image, posts.created_at FROM posts JOIN users ON posts.user_id = users.id ORDER BY posts.id desc');
-                // フェッチの結果を、Postクラスのインスタンスにマッピングする
-                $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Post');
-                $posts = $stmt->fetchAll();
+                $stmt = $pdo->query('SELECT items.id, users.name, items.content, items.price, items.stock, items.image, items.created_at, items.status_flag FROM items JOIN users ON items.user_id = users.id ORDER BY items.id desc');
+                // フェッチの結果を、Itemクラスのインスタンスにマッピングする
+                $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Item');
+                $items = $stmt->fetchAll();
                 self::close_connection($pdo, $stmp);
-                // Postクラスのインスタンスの配列を返す
-                return $posts;
+                // Itemクラスのインスタンスの配列を返す
+                return $items;
             } catch (PDOException $e) {
                 return 'PDO exception: ' . $e->getMessage();
             }
@@ -88,10 +88,12 @@
                     $stmt->execute();
                     
                 }else{
-                     $stmt = $pdo -> prepare("UPDATE posts SET title=:title, content=:content, image=:image WHERE id=:id");
+                     $stmt = $pdo -> prepare("UPDATE items SET name=:name, content=:content, price=:price, stock=:stock, image=:image WHERE id=:id");
                      // バインド処理
-                     $stmt->bindParam(':title', $this->title, PDO::PARAM_STR);
+                     $stmt->bindParam(':name', $this->name, PDO::PARAM_STR);
                      $stmt->bindParam(':content', $this->content, PDO::PARAM_STR);
+                     $stmt->bindParam(':price', $this->price, PDO::PARAM_INT);
+                     $stmt->bindParam(':stock', $this->stock, PDO::PARAM_INT);
                      $stmt->bindParam(':image', $this->image, PDO::PARAM_STR);
                      $stmt->bindParam(':id', $this->id, PDO::PARAM_INT);
                      // 実行
@@ -102,7 +104,7 @@
                 if($this->id === null){
                     return "新規商品投稿が成功しました。";
                 }else{
-                    return $this->id. 'の投稿情報を更新しました';
+                    return $this->id. 'の商品情報を更新しました';
                 }
                 
             } catch (PDOException $e) {
@@ -112,15 +114,15 @@
         public static function find($id){
                 try {
                 $pdo = self::get_connection();
-                $stmt = $pdo -> prepare("SELECT posts.user_id, posts.id, posts.title, posts.content, posts.image, posts.created_at, users.name FROM posts JOIN users ON posts.user_id = users.id WHERE posts.id=:id");
+                $stmt = $pdo -> prepare("select * from items where id=:id");
                 // バインド処理
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);                // 実行
                 $stmt->execute();
-                // フェッチの結果を、Postクラスのインスタンスにマッピングする
-                $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Post');
-                $post = $stmt->fetch();
+                // フェッチの結果を、Itemクラスのインスタンスにマッピングする
+                $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Item');
+                $item = $stmt->fetch();
                 self::close_connection($pdo, $stmp);
-                return $post;
+                return $item;
                 
             } catch (PDOException $e) {
                 return 'PDO exception: ' . $e->getMessage();
@@ -192,6 +194,22 @@
                 self::close_connection($pdo, $stmp);
                 return $favorites_users;
                 
+            } catch (PDOException $e) {
+                return 'PDO exception: ' . $e->getMessage();
+            }
+        }
+        public function update_flag(){
+            try {
+                $pdo = self::get_connection();
+                $stmt = $pdo -> prepare("UPDATE items SET status_flag=:status_flag WHERE id=:id");
+                // バインド処理
+                $stmt->bindParam(':status_flag', $this->status_flag, PDO::PARAM_INT);
+                $stmt->bindParam(':id', $this->id, PDO::PARAM_INT);
+                // 実行
+                $stmt->execute();
+            
+                
+                self::close_connection($pdo, $stmp);
             } catch (PDOException $e) {
                 return 'PDO exception: ' . $e->getMessage();
             }
