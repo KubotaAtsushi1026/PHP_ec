@@ -15,18 +15,17 @@
         <h2><?= $login_user->name ?>さん、ようこそ！</h2>
       
         
-        <p><a href="item_create.php">新規商品登録</a></p>
         <?php foreach($items as $item): ?>
+        <?php if($item->status_flag == 1): ?>
         <ul>
-            <li><?= $item->id ?></li>
+            <li><a href="item_show.php?id=<?= $item->id ?>"><?= $item->id ?></a></li>
             <li><?= $item->name ?></li>
             <li><?= $item->content ?></li>
             <li><?= $item->price ?>円</li>
-            <li><?= $item->stock ?>個</li>
             <li><img src="upload/<?= $item->image ?>"></li>
             <li><?= $item->created_at ?></li>
-            <li><?= $item->status_flag ?></li>
         </ul>
+        <?php endif; ?>
         <?php endforeach; ?>
         
         <p><a href="logout.php">ログアウト</a></p>
