@@ -12,5 +12,6 @@
     // 飛んできた値から新しいカートインスタンス作成
     $cart = new Cart($login_user->id, $item_id, $number);
     // var_dump($cart);
+    $errors = $cart->validate();
     // データベースにカート情報を保存
     $flash_message = $cart->save();

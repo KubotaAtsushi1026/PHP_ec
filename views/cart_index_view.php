@@ -2,21 +2,13 @@
 <html lang="ja">
     <head>
         <meta charset="UTF-8">
-        <title>管理者メニュー</title>
+        <title>登録商品一覧</title>
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
         <!-- ビュー(V)-->
-        <h1>管理者メニュー</h1>
-        <?php if($flash_message !== null): ?>
-        <P class="message"><?= $flash_message ?></P>
-        <?php endif; ?>
-        
-        <h2><?= $login_user->name ?>さん、ようこそ！</h2>
-      
-        
-        <p><a href="item_create.php">新規商品登録</a></p>
-        <p><a href="item_index.php">登録商品一覧</a></p>
+        <h1>登録商品一覧</h1>
+
         <?php foreach($items as $item): ?>
         <?php if($item->status_flag === "0"): ?>
         <ul class="gray">

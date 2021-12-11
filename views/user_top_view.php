@@ -14,7 +14,8 @@
         
         <h2><?= $login_user->name ?>さん、ようこそ！</h2>
       
-        
+        <p><a href="cart_index.php">カート一覧</a></a></p>
+        <p><a href="purchase_index.php">購入一覧</a></p>
         <?php foreach($items as $item): ?>
         <?php if($item->status_flag == 1): ?>
         <ul>

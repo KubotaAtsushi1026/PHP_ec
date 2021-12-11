@@ -24,23 +24,17 @@
             // 空のエラー配列作成
             $errors = array();
             // タイトルが入力されていなければ
-            if($this->name === ''){
-                $errors[] = '商品名が入力されていません';
+            if($this->user_id === ''){
+                $errors[] = 'ユーザー番号が入力されていません';
             }
             // 本文が入力されていなければ
-            if($this->content === ''){
-                $errors[] = '紹介文を入力してください';
+            if($this->item_id === ''){
+                $errors[] = '商品番号を入力してください';
             }
-            if($this->price === ''){
-                $errors[] = '価格を入力してください';
+            if($this->number === ''){
+                $errors[] = '個数を入力してください';
             }
-            if($this->stock === ''){
-                $errors[] = '在庫数を入力してください';
-            }
-            // 画像が選択されていなければ
-            if($this->image === ''){
-                $errors[] = '画像を選択してください';
-            }
+
             
             // 完成したエラー配列はいあげる
             return $errors;
@@ -50,13 +44,13 @@
         public static function all(){
             try {
                 $pdo = self::get_connection();
-                $stmt = $pdo->query('SELECT items.id, items.name, items.content, items.price, items.stock, items.image, items.created_at, items.status_flag FROM items JOIN users ON items.user_id = users.id ORDER BY items.id desc');
+                $stmt = $pdo->query('SELECT user_id, item_id, number FROM carts JOIN users ON items.user_id = users.id ORDER BY items.id desc');
                 // フェッチの結果を、Itemクラスのインスタンスにマッピングする
-                $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Item');
-                $items = $stmt->fetchAll();
+                $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Cart');
+                $carts = $stmt->fetchAll();
                 self::close_connection($pdo, $stmp);
                 // Itemクラスのインスタンスの配列を返す
-                return $items;
+                return $carts;
             } catch (PDOException $e) {
                 return 'PDO exception: ' . $e->getMessage();
             }
