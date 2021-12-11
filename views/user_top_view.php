@@ -12,6 +12,14 @@
         <P class="message"><?= $flash_message ?></P>
         <?php endif; ?>
         
+        <?php if($errors !== null): ?>
+        <ul>
+        <?php foreach($errors as $error): ?>
+            <li class="error"><?= $error ?></li>
+        <?php endforeach; ?>
+        </ul>
+        <?php endif; ?>
+        
         <h2><?= $login_user->name ?>さん、ようこそ！</h2>
       
         <p><a href="cart_index.php">カート一覧</a></a></p>

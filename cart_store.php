@@ -13,5 +13,18 @@
     $cart = new Cart($login_user->id, $item_id, $number);
     // var_dump($cart);
     $errors = $cart->validate();
-    // データベースにカート情報を保存
-    $flash_message = $cart->save();
+    // エラーがなければ
+    if(count($errors) === 0){
+        // データベースにカート情報を保存
+        $flash_message = $cart->save();
+        $_SESSION['flash_message'] = $flash_message;
+        // リダイレクト
+        header('Location: cart_index.php');
+        exit;
+    }else{
+        $_SESSION['errors']  = $errors;
+        // リダイレクト
+        header('Location: user_top.php');
+        exit;
+    }
+    

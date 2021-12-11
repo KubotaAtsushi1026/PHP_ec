@@ -10,5 +10,8 @@
     $flash_message = $_SESSION['flash_message'];
     $_SESSION['flash_message'] = null;
     
+    $errors = $_SESSION['errors'];
+    $_SESSION['errors'] = null;
+    
     include_once 'views/user_top_view.php';
     

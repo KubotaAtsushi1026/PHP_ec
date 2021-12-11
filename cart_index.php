@@ -7,9 +7,9 @@
     require_once 'models/Cart.php';
 
     session_start();
-    $items = Cart::all();
-    // var_dump($items);
     $login_user = $_SESSION['login_user'];
+    $carts = Cart::all($login_user->id);
+    // var_dump($carts);
     $flash_message = $_SESSION['flash_message'];
     $_SESSION['flash_message'] = null;
     

@@ -23,15 +23,16 @@
         public function validate(){
             // 空のエラー配列作成
             $errors = array();
-            // タイトルが入力されていなければ
+            // ユーザーIDが入力されていなければ
             if($this->user_id === ''){
                 $errors[] = 'ユーザー番号が入力されていません';
             }
-            // 本文が入力されていなければ
-            if($this->item_id === ''){
+            // 商品idが入力されていなければ
+            if(!preg_match('/^[1-9][0-9]*$/', $this->item_id)){
                 $errors[] = '商品番号を入力してください';
             }
-            if($this->number === ''){
+            // 個数が選択されていなければ
+            if(!preg_match('/^[1-9][0-9]*$/', $this->number)){
                 $errors[] = '個数を入力してください';
             }
 
@@ -41,15 +42,19 @@
         }
       
         // 全テーブル情報を取得するメソッド
-        public static function all(){
+        public static function all($user_id){
             try {
                 $pdo = self::get_connection();
-                $stmt = $pdo->query('SELECT user_id, item_id, number FROM carts JOIN users ON items.user_id = users.id ORDER BY items.id desc');
-                // フェッチの結果を、Itemクラスのインスタンスにマッピングする
+                $stmt = $pdo->prepare('SELECT carts.id, carts.item_id, items.name, items.image, items.price, items.stock, carts.number, carts.created_at FROM carts JOIN items on carts.item_id=items.id WHERE carts.user_id=:user_id');
+                // バインド処理
+                $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+                // 実行
+                $stmt->execute();
+                // フェッチの結果を、Cartクラスのインスタンスにマッピングする
                 $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Cart');
                 $carts = $stmt->fetchAll();
                 self::close_connection($pdo, $stmp);
-                // Itemクラスのインスタンスの配列を返す
+                // Cartクラスのインスタンスの配列を返す
                 return $carts;
             } catch (PDOException $e) {
                 return 'PDO exception: ' . $e->getMessage();
@@ -114,12 +119,12 @@
         public static function destroy($id){
             try {
                 $pdo = self::get_connection();
-                $stmt = $pdo -> prepare("DELETE FROM posts WHERE id=:id");
+                $stmt = $pdo -> prepare("DELETE FROM carts WHERE id=:id");
                 // バインド処理
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);                // 実行
                 $stmt->execute();
                
-                } catch (PDOException $e) {
+            } catch (PDOException $e) {
                     return 'PDO exception: ' . $e->getMessage();
             }
         }
