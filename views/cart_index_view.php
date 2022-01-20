@@ -51,7 +51,9 @@
         
         <p>合計金額: <?= $total ?>円</p>
         
-        <button>購入</button>
+        <form action="order_create.php">
+            <button>購入</button>
+        </form>
         
         <?php else: ?>
         <p>カート情報はありません</p>
