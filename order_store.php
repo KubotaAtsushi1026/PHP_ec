@@ -7,16 +7,20 @@
     require_once 'models/OrderItem.php';
     session_start();
     
+    // セッションからログインユーザー情報を取得
     $login_user = $_SESSION['login_user'];
+    
+    // そのユーザーの全カート情報を取得
     $carts = Cart::all($login_user->id);
-    // var_dump($carts);
+
+    // セッションからオーダー情報を取得して、セッションから破棄
     $order = $_SESSION['order'];
-    // var_dump($order);
     $_SESSION['order'] = null;
     
-    $order->commit();
-    $_SESSION['flash_message'] = '注文を確定しました';
+    // 購入処理実行
+    $messages = $order->commit();
+    $_SESSION['errors'] = $messages;
     
-    // header('Location: user_top.php');
-    // exit;
-    
+    // リダイレクト
+    header('Location: user_top.php');
+    exit;

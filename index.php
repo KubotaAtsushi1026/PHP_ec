@@ -1,6 +1,8 @@
 <?php
    require_once 'models/User.php';
    require_once 'models/Item.php';
+   require_once 'models/Order.php';
+   require_once 'models/OrderItem.php';
 
    session_start();
    // $_SESSION['users'] = null;

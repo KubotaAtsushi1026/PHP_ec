@@ -22,3 +22,16 @@ li img{
 .gray{
     background-color: #ccc;
 }
+.amazon{
+    width: 100%;
+}
+.flex{
+    display: flex;
+    flex-direction: column;
+}
+side{
+  display: block;
+}
+.flexbox-right{
+   align-items: flex-end;
+}

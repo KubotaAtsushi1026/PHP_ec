@@ -8,6 +8,7 @@
     <body>
         <!-- ビュー(V)-->
         <h1>Amazon</h1>
+        <img src="img/amazon.png" alt="amazon" class="amazon">
         <?php if($flash_message !== null): ?>
         <P class="message"><?= $flash_message ?></P>
         <?php endif; ?>

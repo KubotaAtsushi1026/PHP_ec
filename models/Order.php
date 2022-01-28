@@ -136,27 +136,6 @@
             }
         }
         
-        // 重複チェック
-        public static function find_my_cart($user_id, $item_id){
-             try {
-                $pdo = self::get_connection();
-                $stmt = $pdo -> prepare("SELECT * FROM carts WHERE user_id=:user_id AND item_id=:item_id");
-                // バインド処理
-                $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-                $stmt->bindParam(':item_id', $item_id, PDO::PARAM_INT);
-
-                // 実行
-                $stmt->execute();
-                // フェッチの結果を、Cartクラスのインスタンスにマッピングする
-                $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Cart');
-                $my_cart = $stmt->fetch();
-                self::close_connection($pdo, $stmp);
-                return $my_cart;                
-            
-            } catch (PDOException $e) {
-                return 'PDO exception: ' . $e->getMessage();
-            }
-        }
         // その注文に紐づいた注文商品一覧を取得
         public function order_items(){
              try {
@@ -208,36 +187,82 @@
                 return 'PDO exception: ' . $e->getMessage();
             }
         }
-        
+        // 購入処理
         public function commit(){
-            // try{
-                $pdo = self::get_connection();
-                
-                // $pdo->beginTransaction();
-                
+            
+            // メッセージ配列を新規作成
+            $messages = array();
+            
+            // ログインユーザーの全カート情報を取得
+            $carts = Cart::all($this->user_id);
+            
+            // 全部のカート個数購入できるカウントを0にセット
+            $count = 0;
+            // 部分的の購入できるカートのカウント数を0にセット
+            $lack_count = 0;
+            
+            // カートの中身を1つずつ見ていく
+            foreach($carts as $cart){
+                // カートの商品番号から商品情報を取得
+                $item = Item::find($cart->item_id);
+                // もし、カートの個数がその商品の在庫数より小さいならば
+                if((int)$cart->number < (int)$item->stock){
+                    // カウントを1増やす
+                    $count++;
+                }else if((int)$cart->stock > 0){ // もし、カートの個数がその商品の在庫数以上ならば
+                    $lack_count++;
+                }
+            }
+            
+            // もし、購入処理できるカートがあれば
+            if($count > 0 || $lack_count === 1){
+                $messages[] = '-- カート商品購入が完了しました --';
+
+                // 注文確定し、ordersテーブルに挿入された自動連番を取得
                 $order_id = $this->save();
-                $carts = Cart::all($this->user_id);
                 
+                // カートを1つ1つ見ていき、その該当商品の購入処理
                 foreach($carts as $cart){
                     // カートの商品番号から商品情報を取得
                     $item = Item::find($cart->item_id);
-                    // 新しい注文商品詳細を作成
-                    $order_item = new OrderItem($order_id, $cart->item_id, $cart->number, $item->price);
-                    // 注文商品詳細をデータベースに保存
-                    $order_item->save();
-                    // カート情報削除
-                    Cart::destroy($cart->id);
-                    // 商品の在庫を減らす
-                    $item->stock -= $cart->number;
-                    // 商品の在庫更新
-                    $item->save();
-                    
-                    
+                    // もしカートの商品個数がその商品の在庫数以下であれば
+                    if((int)$cart->number <= (int)$item->stock){
+                        
+                        $messages[] = '商品名: ' . $item->name . 'を、' . $cart->number . '個購入しました';
+                        
+                        // 新しい注文商品詳細を作成
+                        $order_item = new OrderItem($order_id, $cart->item_id, $cart->number, $item->price);
+                        // 注文商品詳細をデータベースに保存
+                        $order_item->save();
+                        // カート情報削除
+                        Cart::destroy($cart->id);
+                        // 商品のインスタンスの在庫を減らす
+                        $item->stock -= $cart->number;
+                        // 商品の在庫更新
+                        $item->save();
+                        
+                    }else{ // そのカート商品の在庫数が不足していれば
+                        
+                        $messages[] = '商品名: ' . $item->name . 'を、' . $cart->number . '個購入しようとしましたが、在庫数が' . $item->stock . '個しかないため、' . $item->stock . '個のみ購入しました。残り' . ($cart->number - $item->stock) . '個の購入は今しばらくお待ちください' ;
+                        // 新しい注文商品詳細を作成。ただし全在庫を購入する
+                        $order_item = new OrderItem($order_id, $cart->item_id, $item->stock, $item->price);
+                        // 注文商品詳細をデータベースに保存
+                        $order_item->save();
+                        // カートインスタンスの個数を在庫数分減らす
+                        $cart->number -= $item->stock;
+                        // カート情報のデータベースへの更新処理
+                        $cart->save();
+                        // 商品の在庫を0にする
+                        $item->stock = 0;
+                        // 商品情報をデータベースに反映させる
+                        $item->save();
+                    }
                 }
-                // $pdo->commit();
-            // }catch(PDOException $e){
-            //     // $pdo->rollback();
-            //     return null;
-            // }
+                
+            }else{
+                $messages[] =  'すべてのカート商品の在庫数が足りませんので購入できません';
+            }
+            
+            return $messages;
         }
     }

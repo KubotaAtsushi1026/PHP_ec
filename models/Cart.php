@@ -75,13 +75,9 @@
                     $stmt->execute();
                     
                 }else{
-                     $stmt = $pdo -> prepare("UPDATE items SET name=:name, content=:content, price=:price, stock=:stock, image=:image WHERE id=:id");
+                     $stmt = $pdo -> prepare("UPDATE carts SET number=:number WHERE id=:id");
                      // バインド処理
-                     $stmt->bindParam(':name', $this->name, PDO::PARAM_STR);
-                     $stmt->bindParam(':content', $this->content, PDO::PARAM_STR);
-                     $stmt->bindParam(':price', $this->price, PDO::PARAM_INT);
-                     $stmt->bindParam(':stock', $this->stock, PDO::PARAM_INT);
-                     $stmt->bindParam(':image', $this->image, PDO::PARAM_STR);
+                     $stmt->bindParam(':number', $this->number, PDO::PARAM_INT);
                      $stmt->bindParam(':id', $this->id, PDO::PARAM_INT);
                      // 実行
                      $stmt->execute();
@@ -94,6 +90,27 @@
                     return $this->id. 'の商品情報を更新しました';
                 }
                 
+            } catch (PDOException $e) {
+                return 'PDO exception: ' . $e->getMessage();
+            }
+        }
+                // 重複チェック
+        public static function find_my_cart($user_id, $item_id){
+             try {
+                $pdo = self::get_connection();
+                $stmt = $pdo -> prepare("SELECT * FROM carts WHERE user_id=:user_id AND item_id=:item_id");
+                // バインド処理
+                $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+                $stmt->bindParam(':item_id', $item_id, PDO::PARAM_INT);
+
+                // 実行
+                $stmt->execute();
+                // フェッチの結果を、Cartクラスのインスタンスにマッピングする
+                $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Cart');
+                $my_cart = $stmt->fetch();
+                self::close_connection($pdo, $stmp);
+                return $my_cart;                
+            
             } catch (PDOException $e) {
                 return 'PDO exception: ' . $e->getMessage();
             }
@@ -128,63 +145,7 @@
                     return 'PDO exception: ' . $e->getMessage();
             }
         }
-        
-        // メールアドレスとパスワードを与えられてユーザーを取得
-        public static function login($email, $password){
-             try {
-                $pdo = self::get_connection();
-                $stmt = $pdo -> prepare("SELECT * FROM users WHERE email=:email AND password=:password");
-                // バインド処理
-                $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-                 $stmt->bindParam(':password', $password, PDO::PARAM_STR);                // 実行
 
-                // 実行
-                $stmt->execute();
-                // フェッチの結果を、Userクラスのインスタンスにマッピングする
-                $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'User');
-                $user = $stmt->fetch();
-                self::close_connection($pdo, $stmp);
-                return $user;
-                
-                } catch (PDOException $e) {
-                    return 'PDO exception: ' . $e->getMessage();
-                }
-        }
-        // その投稿に紐づいたコメント一覧を取得
-        public function comments(){
-             try {
-                $pdo = self::get_connection();
-                $stmt = $pdo -> prepare("select comments.id, users.name, comments.content, comments.created_at from comments join users on comments.user_id = users.id where post_id=:post_id");
-                // バインド処理
-                $stmt->bindParam(':post_id', $this->id, PDO::PARAM_INT);                // 実行
-                $stmt->execute();
-                // フェッチの結果を、Commentクラスのインスタンスにマッピングする
-                $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Comment');
-                $comments = $stmt->fetchAll();
-                self::close_connection($pdo, $stmp);
-                return $comments;
-                
-            } catch (PDOException $e) {
-                return 'PDO exception: ' . $e->getMessage();
-            }
-        }
-        public function favorites(){
-            try {
-                $pdo = self::get_connection();
-                $stmt = $pdo -> prepare("select users.id, users.name from favorites JOIN users ON favorites.user_id = users.id WHERE favorites.post_id=:post_id");
-                // バインド処理
-                $stmt->bindParam(':post_id', $this->id, PDO::PARAM_INT);                // 実行
-                $stmt->execute();
-                // フェッチの結果を、Userクラスのインスタンスにマッピングする
-                $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'User');
-                $favorites_users = $stmt->fetchAll();
-                self::close_connection($pdo, $stmp);
-                return $favorites_users;
-                
-            } catch (PDOException $e) {
-                return 'PDO exception: ' . $e->getMessage();
-            }
-        }
         public function update_flag(){
             try {
                 $pdo = self::get_connection();
