@@ -17,5 +17,5 @@
     
     
     
-    //ビューの表示php
+    //ビューの表示
     include_once 'views/cart_index_view.php';

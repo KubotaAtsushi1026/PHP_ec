@@ -1,6 +1,6 @@
 <?php
     require_once 'models/Item.php';
-    // var_dump($_POST);
+
     session_start();
     $id = $_POST['id'];
     $name = $_POST['name'];
@@ -22,7 +22,7 @@
     // var_dump($item);
     
     $errors = $item->validate();
-    // var_dump($errors);
+
     if(count($errors) === 0){
         $image = mt_rand(100, 10000) . $image;
         $item->image = $image;

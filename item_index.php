@@ -8,12 +8,12 @@
 
     session_start();
     $items = Item::all();
-    // var_dump($items);
+
     $login_user = $_SESSION['login_user'];
     $flash_message = $_SESSION['flash_message'];
     $_SESSION['flash_message'] = null;
     
     
     
-    //ビューの表示php
+    //ビューの表示
     include_once 'views/item_index_view.php';

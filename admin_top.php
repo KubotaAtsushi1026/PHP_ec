@@ -15,5 +15,5 @@
     
     
     
-    //ビューの表示php
+    //ビューの表示
     include_once 'views/admin_top_view.php';

@@ -129,18 +129,6 @@
             }
         }
         
-        public static function destroy($id){
-            try {
-                $pdo = self::get_connection();
-                $stmt = $pdo -> prepare("DELETE FROM posts WHERE id=:id");
-                // バインド処理
-                $stmt->bindParam(':id', $id, PDO::PARAM_INT);                // 実行
-                $stmt->execute();
-               
-                } catch (PDOException $e) {
-                    return 'PDO exception: ' . $e->getMessage();
-            }
-        }
         public function update_flag(){
             try {
                 $pdo = self::get_connection();

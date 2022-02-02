@@ -7,7 +7,18 @@
     </head>
     <body>
         <!-- ビュー(V)-->
-        <h1>一般ユーザーメニュー</h1>
+        <header>
+            <h1>一般ユーザーメニュー</h1>
+            <nav>
+                <ul>
+                    <li><a href="cart_index.php">カート一覧</a></li>
+                    <li><a href="order_index.php">購入一覧</a></li>
+                    <li><a href="logout.php">ログアウト</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        
         <img src="img/amazon2.png" alt="amazon2" class="amazon">
         <?php if($flash_message !== null): ?>
         <P class="message"><?= $flash_message ?></P>
@@ -23,30 +34,26 @@
         
         <h2><?= $login_user->name ?>さん、ようこそ！</h2>
       
-        <p><a href="cart_index.php">カート一覧</a></a></p>
-        <p><a href="order_index.php">購入一覧</a></p>
         <div class="flex">    
-            <div>
+            <div class="box1">
                 <?php foreach($items as $item): ?>
                 <?php if($item->status_flag == 1): ?>
-                <ul>
-                    <li><a href="item_show.php?id=<?= $item->id ?>"><?= $item->id ?></a></li>
-                    <li><?= $item->name ?></li>
-                    <li><?= $item->content ?></li>
-                    <li><?= $item->price ?>円</li>
-                    <li><img src="upload/<?= $item->image ?>"></li>
-                    <li><?= $item->created_at ?></li>
-                </ul>
+                <section>
+                    <h3><?= $item->name ?></h2>
+                    <p><a href="item_show.php?id=<?= $item->id ?>"><?= $item->id ?></a></p>
+                    <p><?= $item->content ?></p>
+                    <p><?= $item->price ?>円</p>
+                    <p><img src="upload/<?= $item->image ?>"></p>
+                    <p><?= $item->created_at ?></p>
+                </section>
                 <?php endif; ?>
                 <?php endforeach; ?>
             </div>    
-            <div class="flexbox-right">
+            <div class="flexbox-end">
                 <img src="img/side.png" alt="side" class="side">
                 <img src="img/side2.png" alt="side2" class="side">
                 <img src="img/side3.png" alt="side3" class="side">
             </div>
-        <p><a href="logout.php">ログアウト</a></p>
 
-        <!--<p><a href="destroy.php">全ユーザー削除</a></p>-->
     </body>
 </html>

@@ -23,17 +23,18 @@
         <ul class="gray">
         <?php else: ?>
         <div class="flex">    
-            <div>
-                <ul>
+            <div class="box1">
+                
                 <?php endif; ?>
-                    <li><a href="item_edit.php?id=<?= $item->id ?>"><?= $item->id ?></a></li>
-                    <li><?= $item->name ?></li>
-                    <li><?= $item->content ?></li>
-                    <li><?= $item->price ?>円</li>
-                    <li><?= $item->stock ?>個</li>
-                    <li><img src="upload/<?= $item->image ?>"></li>
-                    <li><?= $item->created_at ?></li>
-                    <li>
+                <section>
+                    <h3><?= $item->name ?></h2>
+                    <p><a href="item_edit.php?id=<?= $item->id ?>"><?= $item->id ?></a></p>
+                    <p><?= $item->content ?></p>
+                    <p><?= $item->price ?>円</p>
+                    <p><?= $item->stock ?>個</p>
+                    <p><img src="upload/<?= $item->image ?>"></p>
+                    <p><?= $item->created_at ?></p>
+                    <p>
                         <form action="status_flag_change.php" method="POST">
                             <input type="hidden" name="status_flag" value="<?= $item->status_flag ?>">
                             <input type="hidden" name="id" value="<?= $item->id ?>">
@@ -43,12 +44,12 @@
                             <button type="submit">非公開にする</button>
                             <?php endif; ?>
                         </form>
-                    </li>
-                </ul>
+                    </p>
+                </section>
             </div>
         <?php endforeach; ?>
         
-            <div class="flexbox-right">
+            <div class="flexbox-end">
                 <img src="img/side.png" alt="side" class="side">
                 <img src="img/side2.png" alt="side2" class="side">
                 <img src="img/side3.png" alt="side3" class="side">

@@ -6,7 +6,7 @@
     $items = Item::all();
 
     $login_user = $_SESSION['login_user'];
-    // var_dump($login_user);
+
     $flash_message = $_SESSION['flash_message'];
     $_SESSION['flash_message'] = null;
     

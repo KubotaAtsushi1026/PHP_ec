@@ -1,7 +1,7 @@
 <?php
     require_once 'models/Cart.php';
     session_start();
-    // var_dump($_POST);
+
     $id = $_POST['id'];
     print $id;
     

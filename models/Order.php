@@ -154,23 +154,6 @@
                 return 'PDO exception: ' . $e->getMessage();
             }
         }
-        public function favorites(){
-            try {
-                $pdo = self::get_connection();
-                $stmt = $pdo -> prepare("select users.id, users.name from favorites JOIN users ON favorites.user_id = users.id WHERE favorites.post_id=:post_id");
-                // バインド処理
-                $stmt->bindParam(':post_id', $this->id, PDO::PARAM_INT);                // 実行
-                $stmt->execute();
-                // フェッチの結果を、Userクラスのインスタンスにマッピングする
-                $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'User');
-                $favorites_users = $stmt->fetchAll();
-                self::close_connection($pdo, $stmp);
-                return $favorites_users;
-                
-            } catch (PDOException $e) {
-                return 'PDO exception: ' . $e->getMessage();
-            }
-        }
         public function update_flag(){
             try {
                 $pdo = self::get_connection();

@@ -7,16 +7,17 @@
     </head>
     <body>
         <!-- ビュー(V)-->
-        <h1>Amazon</h1>
+        <header>
+            <h1>Amazon</h1>
+            <nav>
+                <ul>
+                    <li><a href="signup.php">新規ユーザー会員登録</a></li>
+                    <li><a href="login.php">ログイン</a></li>
+                </ul>
+            </nav>
+        </header>
         <img src="img/amazon.png" alt="amazon" class="amazon">
         <?php if($flash_message !== null): ?>
         <P class="message"><?= $flash_message ?></P>
         <?php endif; ?>
-      
-        
-        <p><a href="signup.php">新規ユーザー会員登録</a></p>
-        <p><a href="login.php">ログイン</a></p>
-
-        <!--<p><a href="destroy.php">全ユーザー削除</a></p>-->
-    </body>
 </html>
