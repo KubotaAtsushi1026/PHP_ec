@@ -27,18 +27,22 @@
         <p><a href="order_index.php">購入一覧</a></p>
         <div class="flex">    
             <div class="box1">
+                
                 <?php foreach($items as $item): ?>
                 <?php if($item->status_flag == 1): ?>
-                <ul>
-                    <li class="flex"><a href="item_show.php?id=<?= $item->id ?>"><?= $item->id ?></a></li>
-                    <li><?= $item->name ?></li>
-                    <li><?= $item->content ?></li>
-                    <li><?= $item->price ?>円</li>
-                    <li><img src="upload/<?= $item->image ?>"></li>
-                    <li><?= $item->created_at ?></li>
-                </ul>
+                <section>
+                    <h3><?= $item->name ?></h3>
+                    <p class="flex"><a href="item_show.php?id=<?= $item->id ?>"><?= $item->id ?></p></li>
+                    <p><?= $item->name ?></p>
+                    <p><?= $item->content ?></p>
+                    <p><?= $item->price ?>円</p>
+                    <p><img src="upload/<?= $item->image ?>"></p>
+                    <p><?= $item->created_at ?></p>
+                </section>
                 <?php endif; ?>
                 <?php endforeach; ?>
+                    
+                </section>
             </div>    
             <div class="flexbox-end">
                 <img src="img/side.png" alt="side" class="side">

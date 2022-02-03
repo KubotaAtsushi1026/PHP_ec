@@ -7,6 +7,7 @@
     </head>
     <body>
         <!-- ビュー(V)-->
+        <img src="img/amazon3.png" alt="amazon3" class="amazon">
         <h1>ログイン</h1>
         <?php if($errors !== null): ?>
         <ul>

@@ -46,6 +46,7 @@
                             <?php endif; ?>
                         </form>
                     </p>
+                </section>
                 <?php endforeach; ?>
             </div>    
 
