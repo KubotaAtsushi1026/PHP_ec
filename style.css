@@ -87,3 +87,8 @@ section img {
 .white {
     background-color: white;
 }
+nav ul li{
+    display: inline-block;
+    margin: 0 20px;
+}
+ 

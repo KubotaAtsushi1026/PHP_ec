@@ -7,7 +7,17 @@
     </head>
     <body>
         <!-- ビュー(V)-->
-        <h1>一般ユーザーメニュー</h1>
+        <header>
+            <h1>一般ユーザーメニュー</h1>
+            <nav>
+                <ul>
+                    <li><a href="cart_index.php">カート一覧</li></p>
+                    <li><a href="order_index.php">購入一覧</li></p>
+                    <li><a href="contact.php">お問い合わせ</li></p>
+                    <li><a href="logout.php">ログアウト</a></li>
+                </ul>
+            </nav>
+        </header>
         <img src="img/amazon2.png" alt="amazon2" class="amazon">
         <?php if($flash_message !== null): ?>
         <P class="message"><?= $flash_message ?></P>
@@ -23,8 +33,7 @@
         
         <h2><?= $login_user->name ?>さん、ようこそ！</h2>
       
-        <p><a href="cart_index.php">カート一覧</a></p>
-        <p><a href="order_index.php">購入一覧</a></p>
+        
         <div class="flex">    
             <div class="box1">
                 
@@ -32,7 +41,7 @@
                 <?php if($item->status_flag == 1): ?>
                 <section>
                     <h3><?= $item->name ?></h3>
-                    <p class="flex"><a href="item_show.php?id=<?= $item->id ?>"><?= $item->id ?></p></li>
+                    <p class="flex"><a href="item_show.php?id=<?= $item->id ?>"><?= $item->id ?></a></p></li>
                     <p><?= $item->name ?></p>
                     <p><?= $item->content ?></p>
                     <p><?= $item->price ?>円</p>
