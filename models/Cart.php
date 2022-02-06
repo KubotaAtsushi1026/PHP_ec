@@ -1,7 +1,6 @@
 <?php
     // モデル(M)
     require_once 'models/User.php';
-    require_once 'models/Model.php';
 
     // カートの設計図を作成
     class Cart extends Model{
@@ -35,8 +34,6 @@
             if(!preg_match('/^[1-9][0-9]*$/', $this->number)){
                 $errors[] = '個数を入力してください';
             }
-
-            
             // 完成したエラー配列はいあげる
             return $errors;
         }
@@ -53,13 +50,15 @@
                 // フェッチの結果を、Cartクラスのインスタンスにマッピングする
                 $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Cart');
                 $carts = $stmt->fetchAll();
-                self::close_connection($pdo, $stmp);
+                self::close_connection($pdo, $stmt);
                 // Cartクラスのインスタンスの配列を返す
                 return $carts;
+                
             } catch (PDOException $e) {
                 return 'PDO exception: ' . $e->getMessage();
             }
         }
+        
         // データを1件登録するメソッド
         public function save(){
             try {
@@ -83,7 +82,7 @@
                      $stmt->execute();
                 }
                 
-                self::close_connection($pdo, $stmp);
+                self::close_connection($pdo, $stmt);
                 if($this->id === null){
                     return "新規カートに追加しました。";
                 }else{
@@ -94,7 +93,25 @@
                 return 'PDO exception: ' . $e->getMessage();
             }
         }
-                // 重複チェック
+        
+            public static function find($id){
+                try {
+                $pdo = self::get_connection();
+                $stmt = $pdo -> prepare("select * from carts where id=:id");
+                // バインド処理
+                $stmt->bindParam(':id', $id, PDO::PARAM_INT);                // 実行
+                $stmt->execute();
+                // フェッチの結果を、Cartクラスのインスタンスにマッピングする
+                $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Cart');
+                $item = $stmt->fetch();
+                self::close_connection($pdo, $stmt);
+                return $item;
+            } catch (PDOException $e) {
+                return 'PDO exception: ' . $e->getMessage();
+            }
+        }
+
+        // 重複チェック
         public static function find_my_cart($user_id, $item_id){
              try {
                 $pdo = self::get_connection();
@@ -108,26 +125,9 @@
                 // フェッチの結果を、Cartクラスのインスタンスにマッピングする
                 $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Cart');
                 $my_cart = $stmt->fetch();
-                self::close_connection($pdo, $stmp);
+                self::close_connection($pdo, $stmt);
                 return $my_cart;                
             
-            } catch (PDOException $e) {
-                return 'PDO exception: ' . $e->getMessage();
-            }
-        }
-        public static function find($id){
-                try {
-                $pdo = self::get_connection();
-                $stmt = $pdo -> prepare("select * from items where id=:id");
-                // バインド処理
-                $stmt->bindParam(':id', $id, PDO::PARAM_INT);                // 実行
-                $stmt->execute();
-                // フェッチの結果を、Itemクラスのインスタンスにマッピングする
-                $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Item');
-                $item = $stmt->fetch();
-                self::close_connection($pdo, $stmp);
-                return $item;
-                
             } catch (PDOException $e) {
                 return 'PDO exception: ' . $e->getMessage();
             }
@@ -138,28 +138,13 @@
                 $pdo = self::get_connection();
                 $stmt = $pdo -> prepare("DELETE FROM carts WHERE id=:id");
                 // バインド処理
-                $stmt->bindParam(':id', $id, PDO::PARAM_INT);                // 実行
+                $stmt->bindParam(':id', $id, PDO::PARAM_INT);                
+                // 実行
                 $stmt->execute();
+                self::close_connection($pdo, $stmt);
                
             } catch (PDOException $e) {
                     return 'PDO exception: ' . $e->getMessage();
-            }
-        }
-
-        public function update_flag(){
-            try {
-                $pdo = self::get_connection();
-                $stmt = $pdo -> prepare("UPDATE items SET status_flag=:status_flag WHERE id=:id");
-                // バインド処理
-                $stmt->bindParam(':status_flag', $this->status_flag, PDO::PARAM_INT);
-                $stmt->bindParam(':id', $this->id, PDO::PARAM_INT);
-                // 実行
-                $stmt->execute();
-            
-                
-                self::close_connection($pdo, $stmp);
-            } catch (PDOException $e) {
-                return 'PDO exception: ' . $e->getMessage();
             }
         }
     }

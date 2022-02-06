@@ -1,5 +1,6 @@
 <?php
-    require_once 'models/User.php';
+    // ログインフィルターの読み込み
+    require_once 'login_filter.php';
     require_once 'models/Item.php';
     // 一般ユーザーの表示
     session_start();

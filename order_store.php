@@ -1,12 +1,12 @@
 <?php
     // (C)
-    require_once 'models/User.php';
+    // ログインフィルターの読み込み
+    require_once 'login_filter.php';
     require_once 'models/Item.php';
     require_once 'models/Cart.php';
     require_once 'models/Order.php';
     require_once 'models/OrderItem.php';
-    session_start();
-    
+
     // セッションからログインユーザー情報を取得
     $login_user = $_SESSION['login_user'];
     

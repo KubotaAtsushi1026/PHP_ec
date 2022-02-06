@@ -1,6 +1,9 @@
 <?php
     // (C)
+    // ログインフィルターの読み込み
+    require_once 'login_filter.php';
     require_once 'models/Item.php';
+    
     $status_flag = $_POST['status_flag'];
     $id = $_POST['id'];
     // データベースの更新

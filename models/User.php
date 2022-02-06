@@ -51,13 +51,14 @@
                 // フェッチの結果を、Userクラスのインスタンスにマッピングする
                 $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'User');
                 $users = $stmt->fetchAll();
-                self::close_connection($pdo, $stmp);
+                self::close_connection($pdo, $stmt);
                 // Userクラスのインスタンスの配列を返す
                 return $users;
             } catch (PDOException $e) {
                 return 'PDO exception: ' . $e->getMessage();
             }
         }
+        
         // データを1件登録するメソッド
         public function save(){
             try {
@@ -85,7 +86,7 @@
                      $stmt->execute();
                 }
                 
-                self::close_connection($pdo, $stmp);
+                self::close_connection($pdo, $stmt);
                 if($this->id === null){
                     return "新規ユーザー登録が成功しました。";
                 }else{
@@ -106,24 +107,11 @@
                 // フェッチの結果を、Userクラスのインスタンスにマッピングする
                 $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'User');
                 $user = $stmt->fetch();
-                self::close_connection($pdo, $stmp);
+                self::close_connection($pdo, $stmt);
                 return $user;
                 
             } catch (PDOException $e) {
                 return 'PDO exception: ' . $e->getMessage();
-            }
-        }
-        
-        public function destroy(){
-            try {
-                $pdo = self::get_connection();
-                $stmt = $pdo -> prepare("DELETE FROM users WHRER id=:id");
-                // バインド処理
-                $stmt->bindParam(':id', $this->id, PDO::PARAM_INT);                // 実行
-                $stmt->execute();
-               
-                } catch (PDOException $e) {
-                    return 'PDO exception: ' . $e->getMessage();
             }
         }
         
@@ -141,7 +129,7 @@
                 // フェッチの結果を、Userクラスのインスタンスにマッピングする
                 $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'User');
                 $user = $stmt->fetch();
-                self::close_connection($pdo, $stmp);
+                self::close_connection($pdo, $stmt);
                 return $user;
                 
             } catch (PDOException $e) {

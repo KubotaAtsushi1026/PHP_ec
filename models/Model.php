@@ -1,5 +1,6 @@
 <?php
     // Modelクラスのスーパークラス
+    
     class Model {
         protected static function get_connection(){
             try {
@@ -9,8 +10,8 @@
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_CLASS,   //デフォルトのフェッチモードはクラス
                     PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',   //MySQL サーバーへの接続時に実行するコマンド
                   );
-                $pdo = new PDO('mysql:host=localhost;dbname=ec', 'root', '', $options);
-                // $pdo = new PDO('mysql:host=mysql1.php.xdomain.ne.jp;dbname=zeptoolmain_bbs', 'zeptoolmain_bbs', 'rl102644', $options);
+                // $pdo = new PDO('mysql:host=localhost;dbname=ec', 'root', '', $options);
+                $pdo = new PDO('mysql:host=mysql1.php.xdomain.ne.jp;dbname=zeptoolmain_bbs', 'zeptoolmain_bbs', 'rl102644', $options);
 
                 return $pdo;
                 
@@ -19,7 +20,7 @@
             }
         }
 
-// データベースとの切断を行うメソッド
+        // データベースとの切断を行うメソッド
         protected static function close_connection($pdo, $stmp){
             try {
                 $pdo = null;

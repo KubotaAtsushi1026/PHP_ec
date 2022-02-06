@@ -7,7 +7,18 @@
     </head>
     <body>
         <!-- ビュー(V)-->
-        <h1>カート一覧</h1>
+        <header>
+            <h1>カート一覧</h1>
+            <nav>
+                <ul>
+                    <li><a href="user_top.php">一般ユーザーメニュー</li></p>
+                    <li><a href="order_index.php">購入一覧</li></p>
+                    <li><a href="contact.php">お問い合わせ</li></p>
+                    <li><a href="logout.php">ログアウト</a></li>
+                </ul>
+            </nav>
+        </header>
+        <br>
         
         <?php if($flash_message !== null): ?>
         <P class="message"><?= $flash_message ?></P>
@@ -35,6 +46,17 @@
                 <td><img src="upload/<?= $cart->image ?>"</td>
                 <td><?= $cart->price ?>円</td>
                 <td><?= $cart->stock ?>個</td>
+                <td>
+                    <form action="cart_update.php" method="POST">
+                        <input type="hidden" name="cart_id" value="<?= $cart->id ?>">
+                        <select name="number">
+                            <?php for($i = 1; $i <= $cart->stock; $i++): ?>
+                            <option value="<?= $i ?>" <?php if($i == $cart->number): ?>selected<?php endif; ?>><?= $i ?></option>
+                            <?php endfor;?>
+                        </select>個
+                        <button type="submit">更新</button>
+                    </form>
+                </td>
                 <td><?= $cart->number ?>個</td>
                 <td><?= $cart->price * $cart->number ?>円</td>
                 <td><?= $cart->created_at ?></td>
@@ -59,8 +81,5 @@
         <p>カート情報はありません</p>
         <?php endif; ?>
         
-        <p><a href="user_top.php">ユーザートップへ</a></p>
-
-        <!--<p><a href="destroy.php">全ユーザー削除</a></p>-->
     </body>
 </html>

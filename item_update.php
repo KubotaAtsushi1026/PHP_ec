@@ -1,7 +1,9 @@
 <?php
+    // (C)
+    // ログインフィルターの読み込み
+    require_once 'login_filter.php';
     require_once 'models/Item.php';
 
-    session_start();
     $id = $_POST['id'];
     $name = $_POST['name'];
     $content = $_POST['content'];
@@ -14,9 +16,10 @@
     $item->content = $content;
     $item->price = $price;
     $item->stock = $stock;
+    
     // ファイルが選択されていなければ
     if($_FILES['image']['size'] === 0){
-    // $imageという変数に、元の画像ファイル名を保存
+        // $imageという変数に、元の画像ファイル名を保存
         $image = $item->image;
     }
     

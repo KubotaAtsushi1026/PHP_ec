@@ -1,10 +1,8 @@
 <?php
     // (C)
-    
-    require_once 'models/User.php';
+    // ログインフィルターの読み込み
+    require_once 'login_filter.php';
     require_once 'models/Item.php';
-    session_start();
-
 
     // 入力した情報を取得
     $name = $_POST['name'];
@@ -21,12 +19,11 @@
     }
     
     $item = new Item($login_user->id, $name, $content, $price, $stock, $image, $status_flag);
-    // var_dump($item);
-    // // 入力チェック
+
+    // 入力チェック
     $errors = $item->validate();
-    // // var_dump($errors);
-    
-    // // 入力エラーが一つもなければ
+
+    // 入力エラーが一つもなければ
     if(count($errors) === 0){
         
         $image = mt_rand(100, 10000) . $image;

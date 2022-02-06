@@ -1,7 +1,6 @@
 <?php
     // モデル(M)
     require_once 'models/User.php';
-    require_once 'models/Model.php';
 
     // 商品の設計図を作成
     class Item extends Model{
@@ -62,13 +61,14 @@
                 // フェッチの結果を、Itemクラスのインスタンスにマッピングする
                 $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Item');
                 $items = $stmt->fetchAll();
-                self::close_connection($pdo, $stmp);
+                self::close_connection($pdo, $stmt);
                 // Itemクラスのインスタンスの配列を返す
                 return $items;
             } catch (PDOException $e) {
                 return 'PDO exception: ' . $e->getMessage();
             }
         }
+        
         // データを1件登録するメソッド
         public function save(){
             try {
@@ -100,7 +100,7 @@
                      $stmt->execute();
                 }
                 
-                self::close_connection($pdo, $stmp);
+                self::close_connection($pdo, $stmt);
                 if($this->id === null){
                     return "新規商品投稿が成功しました。";
                 }else{
@@ -121,7 +121,7 @@
                 // フェッチの結果を、Itemクラスのインスタンスにマッピングする
                 $stmt->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, 'Item');
                 $item = $stmt->fetch();
-                self::close_connection($pdo, $stmp);
+                self::close_connection($pdo, $stmt);
                 return $item;
                 
             } catch (PDOException $e) {
@@ -139,8 +139,7 @@
                 // 実行
                 $stmt->execute();
             
-                
-                self::close_connection($pdo, $stmp);
+                self::close_connection($pdo, $stmt);
             } catch (PDOException $e) {
                 return 'PDO exception: ' . $e->getMessage();
             }

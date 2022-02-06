@@ -59,7 +59,7 @@ header nav ul {
     list-style-type: none;
     padding: 0;
     justify-content: space-around;
-    width: 300px;
+    width: 600px;
 }
 header nav ul li a {
     text-decoration: none;
@@ -87,8 +87,8 @@ section img {
 .white {
     background-color: white;
 }
-nav ul li{
-    display: inline-block;
-    margin: 0 20px;
-}
+/*nav ul li{*/
+/*    display: inline-block;*/
+/*    margin: 0 20px;*/
+/*}*/
  

@@ -1,10 +1,10 @@
 <?php
     // (C)
-    require_once 'models/User.php';
+    // ログインフィルターの読み込み
+    require_once 'login_filter.php';
     require_once 'models/Cart.php';
     require_once 'models/Order.php';
-    session_start();
-    
+
     $login_user = $_SESSION['login_user'];
     
     $zipcode = $_POST['zipcode'];

@@ -1,11 +1,9 @@
  <?php
+    // (C)
     // ログインフィルターの読み込み
     require_once 'login_filter.php';
-    // (C)
-    require_once 'models/User.php';
     require_once 'models/Item.php';
 
-    session_start();
     $errors = $_SESSION['errors'];
     $_SESSION['errors'] = null;
 

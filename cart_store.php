@@ -1,9 +1,7 @@
 <?php
     // C(コントローラー)
-    require_once 'models/User.php';
     require_once 'models/Item.php';
     require_once 'models/Cart.php';
-    session_start();
     $login_user = $_SESSION['login_user'];
     $item_id = $_POST['item_id'];
     $number = $_POST['number'];

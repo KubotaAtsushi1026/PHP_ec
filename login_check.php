@@ -1,9 +1,11 @@
 <?php
     // (C)
+    // ログインフィルターの読み込み
+    require_once 'login_filter.php';
     require_once 'models/User.php';
     require_once 'models/Item.php';
     session_start();
-    // var_dump($_POST);
+
     // 入力された値を取得
     $email = $_POST['email'];
     $password = $_POST['password'];
@@ -11,7 +13,6 @@
     // データベースを見に行ってそんなユーザーいるのかチェック
     $user = User::login($email, $password);
     
-    // var_dump($user);
     // そんなユーザーがいたならば
     if($user !== false){
         // その見つけたユーザーをセッションに保存
@@ -23,11 +24,9 @@
             // リダイレクト
             header('Location: admin_top.php');
             exit;
-            // var_dump('管理者');
         }else
             header('Location: user_top.php');
             exit;
-            // var_dump('一般');
     }else{
         $errors = array();
         $errors[] = 'そのようなユーザーは登録されていません';

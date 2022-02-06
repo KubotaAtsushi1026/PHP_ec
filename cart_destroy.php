@@ -1,6 +1,5 @@
 <?php
     require_once 'models/Cart.php';
-    session_start();
 
     $id = $_POST['id'];
     print $id;
