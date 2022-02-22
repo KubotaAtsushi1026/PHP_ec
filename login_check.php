@@ -1,7 +1,5 @@
 <?php
     // (C)
-    // ログインフィルターの読み込み
-    require_once 'login_filter.php';
     require_once 'models/User.php';
     require_once 'models/Item.php';
     session_start();
